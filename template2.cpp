@@ -50,6 +50,14 @@ ostream& operator << (ostream& s, myString& A) {
 	return s;
 }
 
+
+void myString::strCpy(char* A, char* B, int n)
+{
+	for (int i = 0; i < n; i++) {
+		B[i] = A[i];
+	}
+}
+
 // default constructor - initializes with a NULL as the first character
 myString::myString () {
 	size = 0;
@@ -89,23 +97,27 @@ int myString::Size () {
 	return size;
 }
 
-// overloading = operator - initialize object with an existing string
+ // overloading = operator - initialize object with an existing string
 myString& myString::operator = (char* B) {
-
+	 
 	// TODO
-	myString* string = new myString[0];
-	return  *string;
+	new myString(B);
+
+	return *this;
+	
 }
 
 // overloading = operator - initialize object with an existing mystring object
-myString& myString::operator = (myString& B) {
-
-	// TODO
-
-	myString* string = new myString[0];
-	return  *string;
-	//return NULL;
-}
+//myString& myString::operator = (myString& B) {
+//
+//	// TODO
+//	myString* stringArray = new myString(strArray);
+//	for (int i = 0; i < B.Size(); i++) {
+//		stringArray[i] = B[i];
+//	}
+//	return stringArray;
+//	//return NULL;
+//}
 
 // checking if two myString objects are the same - return true or false
 bool myString::operator == (myString& B) {
@@ -356,93 +368,104 @@ int main () {
 	int numNeighbors;
 	int neighbor;
 
-
-    //read the first number from the file that contains the number of stop words
-	cin >> numURLsToFilterOut;
-	cout << "Number of Stop words: " << numURLsToFilterOut << endl;
-	myString* URLsToFilterOutList = new myString[numURLsToFilterOut];
-
-	//read the stop words
-	for (int i=0; i < numURLsToFilterOut; i++)
-	{
-		url = getNextURL ();
-		URLsToFilterOutList[i] = url; //calls the overloaded = operator on myString class
-	}
-
-	//Now read a text and put them in the setOfURLs instance.
-	setOfURLs* mySetOfURLs = new setOfURLs ();
-
-	url = getNextURL (); 
-
-	while (url != NULL)
-	{
-		urlString = new myString (url); //create a myString object with the URL
-		(*mySetOfURLs).addURL(*urlString); //add URL to mySetOfURLs
-		url = getNextURL ();
-	}
-
-	// this should display the URL and frequency;
-	// note that becuase you are using binary search and insert the URLs will
-	// be sorted alphabetically
-	cout << endl;
-	cout << "Input display:" << endl;
-	(*mySetOfURLs).display ();
-
-	(*mySetOfURLs).sortFreq ();
-	cout << endl;
-	cout << "mySetOfURLs - Sorted based on frequency:" << endl;
-	(*mySetOfURLs).display ();
-
-	(*mySetOfURLs).sortURLs();
-	cout << endl;
-	cout << "mySetOfURLs - Sorted alphabetically:" << endl;
-	(*mySetOfURLs).display ();
-
-	setOfURLs* newSetOfURLs = (*mySetOfURLs).removeURLs(URLsToFilterOutList, numURLsToFilterOut); // new parameter added here
-	cout << endl;
-	cout << "newSetOfURLs - Sorted alphabetically:" << endl;
-	(*newSetOfURLs).display();
-
-	(*newSetOfURLs).sortFreq ();
-	cout << endl;
-	cout << "newSetOfURLs - Sorted based on frequency:" << endl;
-	(*newSetOfURLs).display ();
-
-
-	cin >> numPages;
-	cout << "Number of websites: " << numPages << endl;
-
-	URLLinks* myLinkStructure = new URLLinks[numPages];
-	for (int i = 0; i < numPages; i++)
-	{
-		// read all URL and store them in the myLinkStructure array of URLLink objects
-	}
-
-	// store the neighbours/hyperlinks
-	for (int i = 0; i < numPages; i++)
-	{
-		cin >> pageNo >> numNeighbors;
-		myLinkStructure[i].setNeighbors(numNeighbors);
-		for (int j = 0; j < numNeighbors; j++)
-		{
-			cin >> neighbor;
-			myLinkStructure[pageNo].addNeighbor((myLinkStructure[neighbor]));
-		}
-	}
-
-	// display all URLLink objects using the overloaded << operator
-
-	cout << "~~~~~Webpages contained as hyperLinks:" << endl;
-	// display all the incoming nodes here
+	char* seq = new char[3];
+	seq[0] = 'e';
+	seq[1] = 'a';
+	seq[2] = 'r';
+	myString* string = new myString();
+	string = myString(seq);
 
 
 
-	// TODO : destructors
-	// delete [] URLsToFilterOutList;
-	// delete mySetOfURLs;
-	// delete newSetOfURLs;
 
-	delete[] myLinkStructure;
+
+
+ //   //read the first number from the file that contains the number of stop words
+	//cin >> numURLsToFilterOut;
+	//cout << "Number of Stop words: " << numURLsToFilterOut << endl;
+	//myString* URLsToFilterOutList = new myString[numURLsToFilterOut];
+
+	////read the stop words
+	//for (int i=0; i < numURLsToFilterOut; i++)
+	//{
+	//	url = getNextURL ();
+	//	URLsToFilterOutList[i] = url; //calls the overloaded = operator on myString class
+	//}
+
+	////Now read a text and put them in the setOfURLs instance.
+	//setOfURLs* mySetOfURLs = new setOfURLs ();
+
+	//url = getNextURL (); 
+
+	//while (url != NULL)
+	//{
+	//	urlString = new myString (url); //create a myString object with the URL
+	//	(*mySetOfURLs).addURL(*urlString); //add URL to mySetOfURLs
+	//	url = getNextURL ();
+	//}
+
+	//// this should display the URL and frequency;
+	//// note that becuase you are using binary search and insert the URLs will
+	//// be sorted alphabetically
+	//cout << endl;
+	//cout << "Input display:" << endl;
+	//(*mySetOfURLs).display ();
+
+	//(*mySetOfURLs).sortFreq ();
+	//cout << endl;
+	//cout << "mySetOfURLs - Sorted based on frequency:" << endl;
+	//(*mySetOfURLs).display ();
+
+	//(*mySetOfURLs).sortURLs();
+	//cout << endl;
+	//cout << "mySetOfURLs - Sorted alphabetically:" << endl;
+	//(*mySetOfURLs).display ();
+
+	//setOfURLs* newSetOfURLs = (*mySetOfURLs).removeURLs(URLsToFilterOutList, numURLsToFilterOut); // new parameter added here
+	//cout << endl;
+	//cout << "newSetOfURLs - Sorted alphabetically:" << endl;
+	//(*newSetOfURLs).display();
+
+	//(*newSetOfURLs).sortFreq ();
+	//cout << endl;
+	//cout << "newSetOfURLs - Sorted based on frequency:" << endl;
+	//(*newSetOfURLs).display ();
+
+
+	//cin >> numPages;
+	//cout << "Number of websites: " << numPages << endl;
+
+	//URLLinks* myLinkStructure = new URLLinks[numPages];
+	//for (int i = 0; i < numPages; i++)
+	//{
+	//	// read all URL and store them in the myLinkStructure array of URLLink objects
+	//}
+
+	//// store the neighbours/hyperlinks
+	//for (int i = 0; i < numPages; i++)
+	//{
+	//	cin >> pageNo >> numNeighbors;
+	//	myLinkStructure[i].setNeighbors(numNeighbors);
+	//	for (int j = 0; j < numNeighbors; j++)
+	//	{
+	//		cin >> neighbor;
+	//		myLinkStructure[pageNo].addNeighbor((myLinkStructure[neighbor]));
+	//	}
+	//}
+
+	//// display all URLLink objects using the overloaded << operator
+
+	//cout << "~~~~~Webpages contained as hyperLinks:" << endl;
+	//// display all the incoming nodes here
+
+
+
+	//// TODO : destructors
+	//// delete [] URLsToFilterOutList;
+	//// delete mySetOfURLs;
+	//// delete newSetOfURLs;
+
+	//delete[] myLinkStructure;
 
 	return 0;
 
