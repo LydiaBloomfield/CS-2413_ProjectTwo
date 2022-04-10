@@ -50,7 +50,6 @@ ostream& operator << (ostream& s, myString& A) {
 	return s;
 }
 
-
 void myString::strCpy(char* A, char* B, int n)
 {
 	for (int i = 0; i < n; i++) {
@@ -101,37 +100,72 @@ int myString::Size () {
 myString& myString::operator = (char* B) {
 	 
 	// TODO
-	new myString(B);
+	// get size of array passed in
+	int i = 0;
+	while (B[i] != '\0')
+		i++;
+	size = i;
+	strArray = new char[size];
+
+	//delete contents of currenty array
+	emptyString(strArray, size + 1);
+
+	for (int j = 0; j < size; j++)
+		strArray[j] = B[j];
 
 	return *this;
 	
 }
 
 // overloading = operator - initialize object with an existing mystring object
-//myString& myString::operator = (myString& B) {
-//
-//	// TODO
-//	myString* stringArray = new myString(strArray);
-//	for (int i = 0; i < B.Size(); i++) {
-//		stringArray[i] = B[i];
-//	}
-//	return stringArray;
-//	//return NULL;
-//}
+myString& myString::operator = (myString& B) {
+
+	// TODO
+	delete[] strArray;
+	strArray = NULL;
+	size = B.size;
+	strArray = new char[size];
+	emptyString(strArray, size + 1);
+	stringCopy(B.strArray, size, strArray);
+	
+	return *this;
+}
 
 // checking if two myString objects are the same - return true or false
 bool myString::operator == (myString& B) {
 
 	// TODO
-
-	return false;
+	if (B.Size() != this->Size()) {
+		return false;
+	}
+	for (int i = 0; i < this->Size(); i++) {
+		if (strArray[i] != B.strArray[i]) {
+			return false;
+		}
+	}
+	return true;
 }
 
 // comparison of myString A if less than myString B - return true or false
 bool myString::operator < (myString& B) {
-
+	
 	// TODO
+	int size;
+	if (this->Size() <= B.Size()) {
+		size = this->Size();
+	}
+	else {
+		size = B.Size();
+	}
 
+	for (int i = 0; i < size; i++) {
+		if (this->strArray[i] < B.strArray[i]) {
+			return true;
+		}
+		else if (this->strArray[i] > B.strArray[i]) {
+			return false;
+		}
+	}
 	return false;
 }
 
@@ -139,7 +173,22 @@ bool myString::operator < (myString& B) {
 bool myString::operator > (myString& B) {
 
 	// TODO
+	int size;
+	if (this->Size() <= B.Size()) {
+		size = this->Size();
+	}
+	else {
+		size = B.Size();
+	}
 
+	for (int i = 0; i < size; i++) {
+		if (this->strArray[i] > B.strArray[i]) {
+			return true;
+		}
+		else if (this->strArray[i] < B.strArray[i]) {
+			return false;
+		}
+	}
 	return false;
 }
 
@@ -169,6 +218,7 @@ char* getNextURL () {
 	}
 	//modify the following line of code, so that the function returns only the URLs (i.e., it ignores everything that does not start with http:// or https:// )
 	if (i > 0) return str;
+	// regex
 	else return NULL;
 }
 
@@ -243,6 +293,7 @@ void setOfURLs::display()
 
 	// TODO
 
+
 }
 
 // sort the _URLs and _frequencies based on frequencies
@@ -301,45 +352,55 @@ public:
 	void setNeighbors(int nei);
 };
 
-//ostream& operator << (ostream& s, URLLinks& A)
-//{
-//	//TODO
-//	
-//}
+ostream& operator << (ostream& s, URLLinks& A)
+{
+	//TODO
+	s << A.URL;
+	return s;
+	
+}
 
 URLLinks::URLLinks()
 {
 	//TODO
+	URL = 0;
+	numLinks = 0;
+	hyperLinks = 0;
+
 }
 
 URLLinks::URLLinks(myString& x, int n)
 {
 	//TODO
+	URL = x;
+	numLinks = n;
+	//*****
+	hyperLinks = 0;
 }
 
 myString& URLLinks::getURL()
 {
 	//TODO
-	myString* string = new myString[0];
-	return  *string;
+	return URL;
 }
 
 int URLLinks::getNumLinks()
 {
 	//TODO
-	return 0;
+	return numLinks;
 }
 
 URLLinks* URLLinks::getHyperLink(int i)
 {
-	//TODO
-	URLLinks* string = new URLLinks[0];
-	return  string;
+	return *hyperLinks;
 }
 
 URLLinks::~URLLinks()
 {
-	//TODO
+	//TODO ***** nulL???
+	URL = NULL;
+	numLinks = NULL;
+	delete hyperLinks;
 }
 
 void URLLinks::addSite(myString& t)
@@ -367,18 +428,6 @@ int main () {
 	int pageNo;
 	int numNeighbors;
 	int neighbor;
-
-	char* seq = new char[3];
-	seq[0] = 'e';
-	seq[1] = 'a';
-	seq[2] = 'r';
-	myString* string = new myString();
-	string = myString(seq);
-
-
-
-
-
 
  //   //read the first number from the file that contains the number of stop words
 	//cin >> numURLsToFilterOut;
