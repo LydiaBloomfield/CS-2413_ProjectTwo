@@ -101,10 +101,7 @@ myString& myString::operator = (char* B) {
 	 
 	// TODO
 	// get size of array passed in
-	int i = 0;
-	while (B[i] != '\0')
-		i++;
-	size = i;
+	size = stringLength(B);
 	strArray = new char[size];
 
 	//delete contents of currenty array
@@ -150,20 +147,16 @@ bool myString::operator == (myString& B) {
 bool myString::operator < (myString& B) {
 	
 	// TODO
-	int size;
-	if (this->Size() <= B.Size()) {
-		size = this->Size();
+	int smallestSize;
+	if (size <= B.Size()) {
+		smallestSize = size;
 	}
 	else {
-		size = B.Size();
+		smallestSize = B.Size();
 	}
-
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < smallestSize; i++) {
 		if (this->strArray[i] < B.strArray[i]) {
 			return true;
-		}
-		else if (this->strArray[i] > B.strArray[i]) {
-			return false;
 		}
 	}
 	return false;
@@ -173,20 +166,17 @@ bool myString::operator < (myString& B) {
 bool myString::operator > (myString& B) {
 
 	// TODO
-	int size;
-	if (this->Size() <= B.Size()) {
-		size = this->Size();
+	int smallestSize;
+	if (size<= B.Size()) {
+		smallestSize = size;
 	}
 	else {
-		size = B.Size();
+		smallestSize = B.Size();
 	}
 
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < smallestSize; i++) {
 		if (this->strArray[i] > B.strArray[i]) {
 			return true;
-		}
-		else if (this->strArray[i] < B.strArray[i]) {
-			return false;
 		}
 	}
 	return false;
