@@ -23,6 +23,12 @@ int stringLength (char* A) {
 	return size; //size is the last index position
 }
 
+int stringLength(const char* A) {
+	int size = 0;
+	while (A[size] != '\0') size++;
+	return size; //size is the last index position
+}
+
 class myString;
 
 class myString {
@@ -155,11 +161,11 @@ bool myString::operator < (myString& B) {
 		smallestSize = B.Size();
 	}
 	for (int i = 0; i < smallestSize; i++) {
-		if (this->strArray[i] < B.strArray[i]) {
-			return true;
+		if (this->strArray[i] > B.strArray[i]) {
+			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 // comparison of myString A if greater than myString B - return true or false
@@ -175,11 +181,11 @@ bool myString::operator > (myString& B) {
 	}
 
 	for (int i = 0; i < smallestSize; i++) {
-		if (this->strArray[i] > B.strArray[i]) {
-			return true;
+		if (this->strArray[i] < B.strArray[i]) {
+			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 // get one URL from redirected input and return it as a string
@@ -207,10 +213,24 @@ char* getNextURL () {
 		}
 	}
 	//modify the following line of code, so that the function returns only the URLs (i.e., it ignores everything that does not start with http:// or https:// )
-	if (i > 0) return str;
-	// regex
+	const char* http = "http://";
+	const char* https = "https://";
+	if (i > 0 && (startsWith(str, http) || startsWith(str, https))) return str;
 	else return NULL;
 }
+
+bool startsWith(char* input, const char* comparator)
+{
+	int length = stringLength(comparator);
+	for (int i = 0; i < length; i++) {
+		if (input[i] != comparator[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+
 
 
 
@@ -353,6 +373,8 @@ ostream& operator << (ostream& s, URLLinks& A)
 URLLinks::URLLinks()
 {
 	//TODO
+	//****** right initialization??
+
 	URL = 0;
 	numLinks = 0;
 	hyperLinks = 0;
@@ -361,7 +383,7 @@ URLLinks::URLLinks()
 
 URLLinks::URLLinks(myString& x, int n)
 {
-	//TODO
+	//TODO **** right initialization?
 	URL = x;
 	numLinks = n;
 	//*****
@@ -419,10 +441,10 @@ int main () {
 	int numNeighbors;
 	int neighbor;
 
- //   //read the first number from the file that contains the number of stop words
-	//cin >> numURLsToFilterOut;
-	//cout << "Number of Stop words: " << numURLsToFilterOut << endl;
-	//myString* URLsToFilterOutList = new myString[numURLsToFilterOut];
+    //read the first number from the file that contains the number of stop words
+	cin >> numURLsToFilterOut;
+	cout << "Number of Stop words: " << numURLsToFilterOut << endl;
+	myString* URLsToFilterOutList = new myString[numURLsToFilterOut];
 
 	////read the stop words
 	//for (int i=0; i < numURLsToFilterOut; i++)
