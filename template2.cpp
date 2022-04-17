@@ -33,7 +33,7 @@ bool startsWith(char* input, const char* comparator)
 {
 	int length = stringLength(comparator);
 	if (stringLength(input) < length) {
-		cout << "This was false, input word too short" << endl;
+		//cout << "This was false, input word too short" << endl;
 		return false;
 	}
 	for (int i = 0; i < length; i++) {
@@ -211,31 +211,32 @@ char* getNextURL () {
 	char c;
 	int i = 0;
 	//read until the next white space or line-break 
-	while (!cin.eof()) {
-		cin.get(c);
-
-		if (!cin.eof ()) {
-			if ((c != '\n') && (c != ' ')) {
-				if (((c >= 'a') && (c <= 'z')) ||
-					((c >= 'A') && (c <= 'Z')) ||
-					((c >= '0') && (c <= '9')) ||
-					(c >= ':') || (c >= '/') || (c >= '.') || (c >= '_'))
-					str[i++] = c;
+		while (!cin.eof()) {
+			cin.get(c);
+			if (!cin.eof()) {
+				if ((c != '\n') && (c != ' ')) {
+					if (((c >= 'a') && (c <= 'z')) ||
+						((c >= 'A') && (c <= 'Z')) ||
+						((c >= '0') && (c <= '9')) ||
+						(c >= ':') || (c >= '/') || (c >= '.') || (c >= '_'))
+						str[i++] = c;
+				}
+				else if (((c == '\n') || (c == ' ')) && (i > 0)) {
+					const char* http = "http://";
+					const char* https = "https://";
+					if (i > 0 && (startsWith(str, http) || startsWith(str, https))) {
+						return str;
+					}
+					else {
+						emptyString(str, 50);
+						i = 0;
+					}
+				}
+			
 			}
-			else if ((c == '\n') && (i > 0))
-				break;
-			else if ((c == ' ') && (i > 0))
-				break;
 		}
+		return NULL;
 
-	}
-	//modify the following line of code, so that the function returns only the URLs (i.e., it ignores everything that does not start with http:// or https:// )
-	const char* http = "http://";
-	const char* https = "https://";
-	if (i > 0 && (startsWith(str, http) || startsWith(str, https))) {
-		return str;
-	}
-	else return NULL;
 }
 
 
