@@ -245,6 +245,7 @@ char* getNextURL () {
 class setOfURLs {
 private:
 	int binarySearchAndInsert (myString& u);
+	int binarySearch(myString, int start, int end);
 protected:
 	myString* _URLs;
 	int* _frequencies;
@@ -307,13 +308,10 @@ void setOfURLs::setSize(int i)
 // print the bag of words in dictionary format
 void setOfURLs::display()
 {
-
 	// TODO
 	for (int i = 0; i < _size; i++) {
 		cout << get_Words()[i] << endl;
 	}
-
-
 }
 
 // sort the _URLs and _frequencies based on frequencies
@@ -340,18 +338,65 @@ setOfURLs* setOfURLs::removeURLs(myString* URLsToFilterOut, int numURLsToFilterO
 // to search for a given word in _URLs - returns 0 if not found, 1 if found
 int setOfURLs::binarySearchAndInsert (myString& wordToFind)
 {
-
-	// TODO
-	for (int i = 0; i < _size; i++) {
+	int result = binarySearch(wordToFind, 0, _size);
+	if (result == -1) {
+		// not found, 
+		return 0;
 	}
-
-	return NULL;
+	else {
+		_frequencies[result]++;
+		return 1;
+	}
 }
+
+int setOfURLs::binarySearch(myString wordToFind, int start, int end)
+{
+	int mid;
+	if (start == end) {
+		// if not found, return -1
+		return -1;
+	}
+	if (start < end) {
+		int mid = (end / 2);
+		if (wordToFind < _URLs[mid]) {
+			return binarySearch(wordToFind, start, mid);
+		}
+		else if (wordToFind > _URLs[mid]) {
+			return binarySearch(wordToFind, mid + 1, end);
+		}
+		else if (wordToFind == _URLs[mid]) {
+			// if found return location? 
+			return mid;
+		}
+	}
+}
+
 
 // method to add words to the setOfURLs object
 void setOfURLs::addURL(myString & newWord)
 {
-	// TODO
+	// if it's false, ie. 0, then we want to add the word to the end of the array.
+	/*if (binarySearchAndInsert(newWord) == 0) {*/
+
+		//**** adjust frequencies array too
+		_size++;
+		myString* newURLs = new myString[_size];
+		int* newFreq = new int[_size];
+
+		for (int i = 0; i < _size - 1; i++) {
+			newURLs[i] = _URLs[i];
+			newFreq[i] = _frequencies[i];
+		}
+
+		newURLs[_size - 1] = newWord;
+		newFreq[_size - 1] = 1;
+		
+		_URLs = new myString[_size];
+		_frequencies = new int[_size];
+
+		_URLs = newURLs;
+		_frequencies = newFreq;
+	/*}*/
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -454,16 +499,6 @@ int main () {
 	int numNeighbors;
 	int neighbor;
 
-	// My mumbo jumbo
-	//char* url = new char[20];
-	//cin >> url;
-	//cout << "This is a url: " << url << endl;
-	//myString string1(url);
-	//myString string2 = string1;
-	//cout << string1 << endl;
-	//cout << string2 << endl;
-
-
 
     //read the first number from the file that contains the number of stop words
 	cin >> numURLsToFilterOut;
@@ -483,14 +518,16 @@ int main () {
 	url = getNextURL (); 
 
 	// my test code
-	cout << url << endl;
+	/*cout << url << endl;*/
 
 	while (url != NULL)
 	{
 		urlString = new myString (url); //create a myString object with the URL
 		(*mySetOfURLs).addURL(*urlString); //add URL to mySetOfURLs
 		url = getNextURL ();
+		 /*cout << url << endl;*/
 	}
+		
 
 	// this should display the URL and frequency;
 	// note that becuase you are using binary search and insert the URLs will
