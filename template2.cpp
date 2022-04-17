@@ -29,6 +29,21 @@ int stringLength(const char* A) {
 	return size; //size is the last index position
 }
 
+bool startsWith(char* input, const char* comparator)
+{
+	int length = stringLength(comparator);
+	if (stringLength(input) < length) {
+		cout << "This was false, input word too short" << endl;
+		return false;
+	}
+	for (int i = 0; i < length; i++) {
+		if (input[i] != comparator[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
 class myString;
 
 class myString {
@@ -198,39 +213,30 @@ char* getNextURL () {
 	//read until the next white space or line-break 
 	while (!cin.eof()) {
 		cin.get(c);
+
 		if (!cin.eof ()) {
 			if ((c != '\n') && (c != ' ')) {
-				if ( ((c >= 'a') && (c <= 'z')) ||
-					 ((c >= 'A') && (c <= 'Z')) ||
-					 ((c >= '0') && (c <= '9')) ||
-					 (c >= ':') || (c >= '/') || (c >= '.') || (c >= '_'))
+				if (((c >= 'a') && (c <= 'z')) ||
+					((c >= 'A') && (c <= 'Z')) ||
+					((c >= '0') && (c <= '9')) ||
+					(c >= ':') || (c >= '/') || (c >= '.') || (c >= '_'))
 					str[i++] = c;
 			}
 			else if ((c == '\n') && (i > 0))
-				return str;
+				break;
 			else if ((c == ' ') && (i > 0))
-				return str;
+				break;
 		}
+
 	}
 	//modify the following line of code, so that the function returns only the URLs (i.e., it ignores everything that does not start with http:// or https:// )
 	const char* http = "http://";
 	const char* https = "https://";
-	if (i > 0 && (startsWith(str, http) || startsWith(str, https))) return str;
+	if (i > 0 && (startsWith(str, http) || startsWith(str, https))) {
+		return str;
+	}
 	else return NULL;
 }
-
-bool startsWith(char* input, const char* comparator)
-{
-	int length = stringLength(comparator);
-	for (int i = 0; i < length; i++) {
-		if (input[i] != comparator[i]) {
-			return false;
-		}
-	}
-	return true;
-}
-
-
 
 
 
@@ -302,6 +308,9 @@ void setOfURLs::display()
 {
 
 	// TODO
+	for (int i = 0; i < _size; i++) {
+		cout << get_Words()[i] << endl;
+	}
 
 
 }
@@ -310,6 +319,7 @@ void setOfURLs::display()
 void setOfURLs::sortFreq()
 {
 	// TODO
+	
 }
 
 // sort the _URLs and _frequencies, alphabetically
@@ -331,6 +341,8 @@ int setOfURLs::binarySearchAndInsert (myString& wordToFind)
 {
 
 	// TODO
+	for (int i = 0; i < _size; i++) {
+	}
 
 	return NULL;
 }
@@ -441,92 +453,106 @@ int main () {
 	int numNeighbors;
 	int neighbor;
 
+	// My mumbo jumbo
+	//char* url = new char[20];
+	//cin >> url;
+	//cout << "This is a url: " << url << endl;
+	//myString string1(url);
+	//myString string2 = string1;
+	//cout << string1 << endl;
+	//cout << string2 << endl;
+
+
+
     //read the first number from the file that contains the number of stop words
 	cin >> numURLsToFilterOut;
 	cout << "Number of Stop words: " << numURLsToFilterOut << endl;
 	myString* URLsToFilterOutList = new myString[numURLsToFilterOut];
 
-	////read the stop words
-	//for (int i=0; i < numURLsToFilterOut; i++)
-	//{
-	//	url = getNextURL ();
-	//	URLsToFilterOutList[i] = url; //calls the overloaded = operator on myString class
-	//}
+	//read the stop words
+	for (int i=0; i < numURLsToFilterOut; i++)
+	{
+		url = getNextURL ();
+		URLsToFilterOutList[i] = url; //calls the overloaded = operator on myString class
+	}
 
-	////Now read a text and put them in the setOfURLs instance.
-	//setOfURLs* mySetOfURLs = new setOfURLs ();
+	//Now read a text and put them in the setOfURLs instance.
+	setOfURLs* mySetOfURLs = new setOfURLs ();
 
-	//url = getNextURL (); 
+	url = getNextURL (); 
 
-	//while (url != NULL)
-	//{
-	//	urlString = new myString (url); //create a myString object with the URL
-	//	(*mySetOfURLs).addURL(*urlString); //add URL to mySetOfURLs
-	//	url = getNextURL ();
-	//}
+	// my test code
+	cout << url << endl;
 
-	//// this should display the URL and frequency;
-	//// note that becuase you are using binary search and insert the URLs will
-	//// be sorted alphabetically
-	//cout << endl;
-	//cout << "Input display:" << endl;
-	//(*mySetOfURLs).display ();
+	while (url != NULL)
+	{
+		urlString = new myString (url); //create a myString object with the URL
+		(*mySetOfURLs).addURL(*urlString); //add URL to mySetOfURLs
+		url = getNextURL ();
+	}
 
-	//(*mySetOfURLs).sortFreq ();
-	//cout << endl;
-	//cout << "mySetOfURLs - Sorted based on frequency:" << endl;
-	//(*mySetOfURLs).display ();
+	// this should display the URL and frequency;
+	// note that becuase you are using binary search and insert the URLs will
+	// be sorted alphabetically
+	cout << endl;
+	cout << "Input display:" << endl;
+	(*mySetOfURLs).display ();
 
-	//(*mySetOfURLs).sortURLs();
-	//cout << endl;
-	//cout << "mySetOfURLs - Sorted alphabetically:" << endl;
-	//(*mySetOfURLs).display ();
+	(*mySetOfURLs).sortFreq ();
+	cout << endl;
+	cout << "mySetOfURLs - Sorted based on frequency:" << endl;
+	(*mySetOfURLs).display ();
 
-	//setOfURLs* newSetOfURLs = (*mySetOfURLs).removeURLs(URLsToFilterOutList, numURLsToFilterOut); // new parameter added here
-	//cout << endl;
-	//cout << "newSetOfURLs - Sorted alphabetically:" << endl;
-	//(*newSetOfURLs).display();
+	(*mySetOfURLs).sortURLs();
+	cout << endl;
+	cout << "mySetOfURLs - Sorted alphabetically:" << endl;
+	(*mySetOfURLs).display ();
 
-	//(*newSetOfURLs).sortFreq ();
-	//cout << endl;
-	//cout << "newSetOfURLs - Sorted based on frequency:" << endl;
-	//(*newSetOfURLs).display ();
+	setOfURLs* newSetOfURLs = (*mySetOfURLs).removeURLs(URLsToFilterOutList, numURLsToFilterOut); // new parameter added here
+	cout << endl;
+	cout << "newSetOfURLs - Sorted alphabetically:" << endl;
+	(*newSetOfURLs).display();
 
-
-	//cin >> numPages;
-	//cout << "Number of websites: " << numPages << endl;
-
-	//URLLinks* myLinkStructure = new URLLinks[numPages];
-	//for (int i = 0; i < numPages; i++)
-	//{
-	//	// read all URL and store them in the myLinkStructure array of URLLink objects
-	//}
-
-	//// store the neighbours/hyperlinks
-	//for (int i = 0; i < numPages; i++)
-	//{
-	//	cin >> pageNo >> numNeighbors;
-	//	myLinkStructure[i].setNeighbors(numNeighbors);
-	//	for (int j = 0; j < numNeighbors; j++)
-	//	{
-	//		cin >> neighbor;
-	//		myLinkStructure[pageNo].addNeighbor((myLinkStructure[neighbor]));
-	//	}
-	//}
-
-	//// display all URLLink objects using the overloaded << operator
-
-	//cout << "~~~~~Webpages contained as hyperLinks:" << endl;
-	//// display all the incoming nodes here
+	(*newSetOfURLs).sortFreq ();
+	cout << endl;
+	cout << "newSetOfURLs - Sorted based on frequency:" << endl;
+	(*newSetOfURLs).display ();
 
 
+	cin >> numPages;
+	cout << "Number of websites: " << numPages << endl;
 
-	//// TODO : destructors
-	//// delete [] URLsToFilterOutList;
-	//// delete mySetOfURLs;
-	//// delete newSetOfURLs;
+	URLLinks* myLinkStructure = new URLLinks[numPages];
+	for (int i = 0; i < numPages; i++)
+	{
+		// read all URL and store them in the myLinkStructure array of URLLink objects
+	}
 
-	//delete[] myLinkStructure;
+	// store the neighbours/hyperlinks
+	for (int i = 0; i < numPages; i++)
+	{
+		cin >> pageNo >> numNeighbors;
+		myLinkStructure[i].setNeighbors(numNeighbors);
+		for (int j = 0; j < numNeighbors; j++)
+		{
+			cin >> neighbor;
+			myLinkStructure[pageNo].addNeighbor((myLinkStructure[neighbor]));
+		}
+	}
+
+	// display all URLLink objects using the overloaded << operator
+
+	cout << "~~~~~Webpages contained as hyperLinks:" << endl;
+	// display all the incoming nodes here
+
+
+
+	// TODO : destructors
+	// delete [] URLsToFilterOutList;
+	// delete mySetOfURLs;
+	// delete newSetOfURLs;
+
+	delete[] myLinkStructure;
 
 	return 0;
 
