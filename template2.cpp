@@ -375,6 +375,7 @@ int setOfURLs::binarySearch(myString wordToFind, int start, int end)
 // method to add words to the setOfURLs object
 void setOfURLs::addURL(myString & newWord)
 {
+	// something is wrong with binary search and insert*****
 	// if it's false, ie. 0, then we want to add the word to the end of the array.
 	/*if (binarySearchAndInsert(newWord) == 0) {*/
 
