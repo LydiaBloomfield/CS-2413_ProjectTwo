@@ -109,7 +109,16 @@ myString::myString (myString& B) {
 
 char* myString::getWord()
 {
+	/*int i = 0;
+	while (strArray[i] != '\0') i++;
+
+	char* word = new char[i];
+	for (int j = 0; j < i; j++) {
+		word[j] = strArray[j];
+	}
+	return word;*/
 	return strArray;
+	//*****DIFFERENT FROM LUCAS
 }
 
 // getter for size of myString
@@ -125,12 +134,13 @@ myString& myString::operator = (char* B) {
 	size = stringLength(B);
 	strArray = new char[size];
 
-	//delete contents of currenty array
+	//delete contents of current array
 	emptyString(strArray, size + 1);
 
 	for (int j = 0; j < size; j++)
 		strArray[j] = B[j];
 
+	// ******DIFFERENT FROM LUCAS
 	return *this;
 	
 }
@@ -141,10 +151,10 @@ myString& myString::operator = (myString& B) {
 	// TODO
 	delete[] strArray;
 	strArray = NULL;
-	size = B.size;
+	size = B.Size();
 	strArray = new char[size];
 	emptyString(strArray, size + 1);
-	stringCopy(B.strArray, size, strArray);
+	strCpy( B.getWord(), strArray, size);
 	
 	return *this;
 }
@@ -157,7 +167,7 @@ bool myString::operator == (myString& B) {
 		return false;
 	}
 	for (int i = 0; i < this->Size(); i++) {
-		if (strArray[i] != B.strArray[i]) {
+		if (strArray[i] != B.getWord()[i]) {
 			return false;
 		}
 	}
@@ -166,7 +176,7 @@ bool myString::operator == (myString& B) {
 
 // comparison of myString A if less than myString B - return true or false
 bool myString::operator < (myString& B) {
-	
+	// LOOK AT THIS IT'S DIFFERENT THAN LUCAS*****
 	// TODO
 	int smallestSize;
 	if (size <= B.Size()) {
@@ -176,11 +186,14 @@ bool myString::operator < (myString& B) {
 		smallestSize = B.Size();
 	}
 	for (int i = 0; i < smallestSize; i++) {
-		if (this->strArray[i] > B.strArray[i]) {
+		if (this->getWord()[i] < B.getWord()[i]) {
+			return true;
+		}
+		if (this->getWord()[i] > B.getWord()[i]) {
 			return false;
 		}
 	}
-	return true;
+	return false;
 }
 
 // comparison of myString A if greater than myString B - return true or false
@@ -188,7 +201,7 @@ bool myString::operator > (myString& B) {
 
 	// TODO
 	int smallestSize;
-	if (size<= B.Size()) {
+	if (size <= B.Size()) {
 		smallestSize = size;
 	}
 	else {
@@ -196,11 +209,14 @@ bool myString::operator > (myString& B) {
 	}
 
 	for (int i = 0; i < smallestSize; i++) {
-		if (this->strArray[i] < B.strArray[i]) {
+		if (this->getWord()[i] > B.getWord()[i]) {
+			return true;
+		}
+		if (this->getWord()[i] < B.getWord()[i]) {
 			return false;
 		}
 	}
-	return true;
+	return false;
 }
 
 // get one URL from redirected input and return it as a string
@@ -208,6 +224,7 @@ char* getNextURL () {
 	char* str = new char[50]; //assumes a max URL size of 50
 	emptyString (str, 50);
 
+	int dollarCounter = 0;
 	char c;
 	int i = 0;
 	//read until the next white space or line-break 
@@ -232,6 +249,11 @@ char* getNextURL () {
 						i = 0;
 					}
 				}
+				if (c == '$') dollarCounter++;
+				if (c != '$' && dollarCounter > 0) dollarCounter = 0;
+				if (dollarCounter == 4) {
+					break;
+				}
 			
 			}
 		}
@@ -245,7 +267,7 @@ char* getNextURL () {
 class setOfURLs {
 private:
 	int binarySearchAndInsert (myString& u);
-	int binarySearch(myString, int start, int end);
+	int binarySearch(myString& word, int start, int end);
 protected:
 	myString* _URLs;
 	int* _frequencies;
@@ -310,7 +332,7 @@ void setOfURLs::display()
 {
 	// TODO
 	for (int i = 0; i < _size; i++) {
-		cout << get_Words()[i] << endl;
+		cout << get_Words()[i] << ": " << _frequencies[i] << endl;
 	}
 }
 
@@ -318,6 +340,8 @@ void setOfURLs::display()
 void setOfURLs::sortFreq()
 {
 	// TODO
+
+
 	
 }
 
@@ -325,12 +349,52 @@ void setOfURLs::sortFreq()
 void setOfURLs::sortURLs()
 {
 	// TODO
+	//selection sort
+	//*** Triggers delete_scalar breakpoint
+	myString urlTemp;
+	int freqTemp;
+	/*cout << _URLs[0] << endl;*/
+
+	cout << _size << endl;
+	/*for (int i = 0; i < 100; i++) {
+		cout << _URLs[i] << endl;
+	}*/
+
+	for (int i = 0; i < _size; i++) {
+		/*cout << _size << endl;*/
+		for (int j = i + 1; j < _size ; j++) {
+			cout << "test one" << endl;
+
+			if (_URLs[i].getWord() > _URLs[j].getWord()) {
+				cout << _URLs[i] << endl;
+				cout << _URLs[j] << endl;
+
+				urlTemp = _URLs[i].getWord();
+				freqTemp = _frequencies[i];
+				
+				_URLs[i] = _URLs[j].getWord();
+				_frequencies[i] = _frequencies[j];
+
+				_URLs[j] = urlTemp.getWord();
+				_frequencies[j] = freqTemp;
+			
+				cout << _URLs[i] << endl;
+				cout << _URLs[j] << endl;
+			}
+		}
+	}
+
 }
 
 setOfURLs* setOfURLs::removeURLs(myString* URLsToFilterOut, int numURLsToFilterOut)
 {
 
 	// TODO
+	// you have a set of URls
+	// need to make a new set of urls, but we don't know it's size yet
+
+	// we iterate through the set of urls and compare it to the urls to be filtered out
+	// if it matches, we don't move it to the new array
 
 	return NULL;
 }
@@ -338,6 +402,7 @@ setOfURLs* setOfURLs::removeURLs(myString* URLsToFilterOut, int numURLsToFilterO
 // to search for a given word in _URLs - returns 0 if not found, 1 if found
 int setOfURLs::binarySearchAndInsert (myString& wordToFind)
 {
+	sortURLs();
 	int result = binarySearch(wordToFind, 0, _size);
 	if (result == -1) {
 		// not found, 
@@ -349,26 +414,46 @@ int setOfURLs::binarySearchAndInsert (myString& wordToFind)
 	}
 }
 
-int setOfURLs::binarySearch(myString wordToFind, int start, int end)
+int setOfURLs::binarySearch(myString& wordToFind, int start, int end)
 {
-	int mid;
-	if (start == end) {
-		// if not found, return -1
-		return -1;
-	}
-	if (start < end) {
-		int mid = (end / 2);
-		if (wordToFind < _URLs[mid]) {
-			return binarySearch(wordToFind, start, mid);
-		}
-		else if (wordToFind > _URLs[mid]) {
-			return binarySearch(wordToFind, mid + 1, end);
-		}
-		else if (wordToFind == _URLs[mid]) {
-			// if found return location? 
+	if (end >= 1) {
+		int mid = start + (end - start) / 2;
+		if (_URLs[mid] == wordToFind) {
+			// if found return the location
 			return mid;
 		}
+		else if (_URLs[mid] > wordToFind) {
+			return binarySearch(wordToFind, start, mid - 1);
+		}
+		else {
+			return binarySearch(wordToFind, mid + 1, end);
+		}
 	}
+	// if not found return negative
+	return -1;
+
+
+
+
+
+	//int mid;
+	//if (start == end) {
+	//	// if not found, return -1
+	//	return -1;
+	//}
+	//if (start < end) {
+	//	int mid = (end / 2);
+	//	if (wordToFind < _URLs[mid]) {
+	//		return binarySearch(wordToFind, start, mid);
+	//	}
+	//	else if (wordToFind > _URLs[mid]) {
+	//		return binarySearch(wordToFind, mid + 1, end);
+	//	}
+	//	else if (wordToFind == _URLs[mid]) {
+	//		// if found return location? 
+	//		return mid;
+	//	}
+	//}
 }
 
 
@@ -380,6 +465,7 @@ void setOfURLs::addURL(myString & newWord)
 	/*if (binarySearchAndInsert(newWord) == 0) {*/
 
 		//**** adjust frequencies array too
+	
 		_size++;
 		myString* newURLs = new myString[_size];
 		int* newFreq = new int[_size];
@@ -397,7 +483,13 @@ void setOfURLs::addURL(myString & newWord)
 
 		_URLs = newURLs;
 		_frequencies = newFreq;
+
+		
 	/*}*/
+		if (_size > 1 ) {
+			sortURLs();
+	}
+		
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -529,6 +621,23 @@ int main () {
 		 /*cout << url << endl;*/
 	}
 		
+	char* abc = new char[3];
+		abc[0] = 'a';
+		abc[1] = 'b';
+		abc[2] = 'c';
+	char* acb = new char[3];
+	acb[0] = 'a';
+	acb[1] = 'c';
+	acb[2] = 'b';
+	myString* urlOne = new myString(abc);
+	myString *urlTwo = new myString(acb);
+
+	if (urlOne < urlTwo) {
+		cout << "true" << endl;
+	}
+	else {
+		cout << "false" << endl;
+	}
 
 	// this should display the URL and frequency;
 	// note that becuase you are using binary search and insert the URLs will
