@@ -1,4 +1,5 @@
 #include <iostream>
+// if you have hypertext and hypetextdkfs it acknowledges them as the same
 
 using namespace std;
 
@@ -272,6 +273,7 @@ class setOfURLs {
 private:
 	int binarySearchAndInsert (myString& u);
 	int binarySearch(myString& word, int start, int end);
+	int removeBinarySearch(myString& word, int start, int end);
 protected:
 	myString* _URLs;
 	int* _frequencies;
@@ -335,6 +337,7 @@ void setOfURLs::setSize(int i)
 void setOfURLs::display()
 {
 	// TODO
+	cout << "mySetOfURLs: " << _size << " " << endl;
 	for (int i = 0; i < _size; i++) {
 		cout << get_Words()[i] << ": " << _frequencies[i] << endl;
 	}
@@ -412,15 +415,76 @@ void setOfURLs::sortURLs()
 
 setOfURLs* setOfURLs::removeURLs(myString* URLsToFilterOut, int numURLsToFilterOut)
 {
+	int ogSize = _size;
 
-	// TODO
-	// you have a set of URls
-	// need to make a new set of urls, but we don't know it's size yet
+	for (int i = 0; i < numURLsToFilterOut; i++) {
+		int index = removeBinarySearch(URLsToFilterOut[i], 0, ogSize);
 
-	// we iterate through the set of urls and compare it to the urls to be filtered out
-	// if it matches, we don't move it to the new array
+		// if it was found in binary search, we do stuff
+		if (index > -1) {
+			_size = _size - _frequencies[index];
+			myString* tempURLs = new myString[_size];
+			int* tempFreq = new int[_size];
+			for (int i = 0; i < _size; i++) {
+				// if we haven't reached the skip point yet, just fill in the beginning of the arrays
+				if (i < index) {
+					tempURLs[i] = _URLs[i];
+					tempFreq[i] = _frequencies[i];
+				}
+				// if i is greater or equal to the returned index we want to get the info from the next cell of the og array
+				else {
+					tempURLs[i] = _URLs[i + 1];
+					tempFreq[i] = _frequencies[i + 1];
+				}
+			}
+			_URLs = new myString[_size];
+			_frequencies = new int[_size];
 
-	return NULL;
+			_URLs = tempURLs;
+			_frequencies = tempFreq;
+
+		}
+		//setOfURLs* newSet = new setOfURLs(_size - 1);
+		//myString* tempURLs = new myString[_size - 1];
+		//int* tempFreq = new int[_size - 1];
+		//int newSize = _size;
+		//for(int i = 0; i < numURLsToFilterOut; i++) {
+		//	int index = binarySearch(URLsToFilterOut[i], 0, numURLsToFilterOut);
+		//	// if it wasn't found we don;t do anything, if it's greater than -1, we do stuff
+		//	if (index > -1){
+		//		// decrease size and make two new temp arrays 
+		//		newSize--;
+		//		// iterate through with the size of the new array
+		//		for (int i = 0; i < newSize; i++) {
+		//			// if we haven't reached the skip point yet, just fill in the beginning of the arrays
+		//			if (i < index) {
+		//				tempURLs[i] = _URLs[i];
+		//				tempFreq[i] = _frequencies[i];
+		//			}
+		//			// if i is greater or equal to the returned index we want to get the info from the next cell of the og array
+		//			else {
+		//				tempURLs[i] = _URLs[i + 1];
+		//				tempFreq[i] = _frequencies[i + 1];
+		//			}
+
+		//		}
+		//		newSet->_URLs = new myString[newSize];
+		//		newSet->_frequencies = new int[newSize];
+		//	}
+		//}
+		//
+		//newSet->_URLs = tempURLs;
+		//newSet->_frequencies = tempFreq;
+
+		// TODO
+		// you have a set of URls
+		// need to make a new set of urls, but we don't know it's size yet
+
+		// we iterate through the set of urls and compare it to the urls to be filtered out
+		// if it matches, we don't move it to the new array
+	}
+		return this;
+	
 }
 
 // to search for a given word in _URLs - returns 0 if not found, 1 if found
@@ -450,7 +514,7 @@ int setOfURLs::binarySearch(myString& wordToFind, int start, int end)
 			left = m + 1;
 		}
 		else if (_URLs[m] > wordToFind) {
-			right = m;
+			right = m ;
 		}
 		else {
 			return m;
@@ -458,31 +522,34 @@ int setOfURLs::binarySearch(myString& wordToFind, int start, int end)
 		m = (left + right) / 2;
 
 	}
-
-
-	//if (start <= end) /*(end >= 1 && start != end) */ {
-	//	int mid = start + (end - start) / 2;
-	//	if (_URLs[mid] == wordToFind) {
-	//		// if found return the location
-	//		cout << wordToFind << endl;
-	//		return mid;
-	//		
-	//	}
-	//	else if (_URLs[mid] > wordToFind) {
-	//		return binarySearch(wordToFind, start, mid - 1);
-	//	}
-
-	//	else if(_URLs[mid] < wordToFind) {
-	//		cout << "i got here" << endl;
-	//		return binarySearch(wordToFind, mid, end);
-
-	//	}
-	//}
-	// if not found return negative
 	return -1;
 
 }
 
+int setOfURLs::removeBinarySearch(myString& wordToFind, int start, int end)
+{
+	sortURLs();
+	int left = 0;
+	int right = end - 1;
+	int m = (left + right) / 2;
+
+	while (left <= right) {
+
+		if (_URLs[m] < wordToFind) {
+			left = m + 1;
+		}
+		else if (_URLs[m] > wordToFind) {
+			right = m;
+		}
+		else {
+			/*cout << m << endl;*/
+			return m;
+		}
+		m = (left + right) / 2;
+
+	}
+	return -1;
+}
 
 // method to add words to the setOfURLs object
 void setOfURLs::addURL(myString & newWord)
@@ -530,7 +597,7 @@ protected:
 	URLLinks** hyperLinks;
 public:
 	URLLinks();
-	URLLinks(myString& x, int n);
+	URLLinks(myString x, int n);
 	~URLLinks();
 	int getNumLinks();
 	URLLinks* getHyperLink(int i);
@@ -550,22 +617,17 @@ ostream& operator << (ostream& s, URLLinks& A)
 
 URLLinks::URLLinks()
 {
-	//TODO
-	//****** right initialization??
-
-	URL = 0;
+	myString* urlFiller = new myString();
+	URL = *urlFiller;
 	numLinks = 0;
-	hyperLinks = 0;
-
+	hyperLinks = NULL;
 }
 
-URLLinks::URLLinks(myString& x, int n)
+URLLinks::URLLinks(myString x, int n)
 {
-	//TODO **** right initialization?
 	URL = x;
-	numLinks = n;
-	//*****
-	hyperLinks = 0;
+	numLinks = 0;
+	hyperLinks = NULL;
 }
 
 myString& URLLinks::getURL()
@@ -639,10 +701,13 @@ int main () {
 
 	while (url != NULL)
 	{
+		char c;
+		cin >> c;
+		if (c == '$') break;
 		urlString = new myString (url); //create a myString object with the URL
 		(*mySetOfURLs).addURL(*urlString); //add URL to mySetOfURLs
 		url = getNextURL ();
-		 /*cout << url << endl;*/
+		 
 	}
 		
 	/*char* bbb = new char[3];
@@ -703,32 +768,53 @@ int main () {
 	cout << "newSetOfURLs - Sorted based on frequency:" << endl;
 	(*newSetOfURLs).display ();
 
-
 	cin >> numPages;
 	cout << "Number of websites: " << numPages << endl;
 
+	 
+	
+	
+	
+	
+	
+	//construct an array to hold all of the URLLinks objects
+	 //each URL has a URLLinks object associated with it
 	URLLinks* myLinkStructure = new URLLinks[numPages];
+	
+
+	cout << "got here" << endl;
 	for (int i = 0; i < numPages; i++)
 	{
+		myString* nextURL = new myString(getNextURL());
+		URLLinks* current = new URLLinks();
+		current->getURL = nextURL;
+		/*URLLinks* current = new URLLinks(*nextURL, 0);*/
+
+
+		myLinkStructure[i] = *current;
 		// read all URL and store them in the myLinkStructure array of URLLink objects
 	}
 
 	// store the neighbours/hyperlinks
-	for (int i = 0; i < numPages; i++)
-	{
-		cin >> pageNo >> numNeighbors;
-		myLinkStructure[i].setNeighbors(numNeighbors);
-		for (int j = 0; j < numNeighbors; j++)
-		{
-			cin >> neighbor;
-			myLinkStructure[pageNo].addNeighbor((myLinkStructure[neighbor]));
-		}
-	}
+	//for (int i = 0; i < numPages; i++)
+	//{
+	//	 //read in the id and the amount of neighbors it has
+	//	cin >> pageNo /*>> numNeighbors;*/;
+	//	cout << pageNo << endl;
+	//	// so setNeighbors just allocates the space for the horizontal arrays
+	//	myLinkStructure[i].setNeighbors(numNeighbors);
+	//	for (int j = 0; j < numNeighbors; j++)
+	//	{
+	//		cin >> neighbor;
+	//		// addNeighbor adds the neighbors one at a time
+	//		myLinkStructure[pageNo].addNeighbor((myLinkStructure[neighbor]));
+	//	}
+	//}
 
-	// display all URLLink objects using the overloaded << operator
+	//// display all URLLink objects using the overloaded << operator
 
-	cout << "~~~~~Webpages contained as hyperLinks:" << endl;
-	// display all the incoming nodes here
+	//cout << "~~~~~Webpages contained as hyperLinks:" << endl;
+	//// display all the incoming nodes here
 
 
 
@@ -737,7 +823,7 @@ int main () {
 	// delete mySetOfURLs;
 	// delete newSetOfURLs;
 
-	delete[] myLinkStructure;
+	/*delete[] myLinkStructure;*/
 
 	return 0;
 
