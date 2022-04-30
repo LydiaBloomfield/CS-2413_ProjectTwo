@@ -474,13 +474,13 @@ int setOfURLs::binarySearch(myString& wordToFind, int start, int end)
 	int right = _size - 1;
 	int m = (left + right) / 2;
 
-	while (left < right) {
+	while (left <= right) {
 		
 		if (_URLs[m] < wordToFind) {
 			left = m + 1;
 		}
 		else if (_URLs[m] > wordToFind) {
-			right = m;
+			right = m -1;
 		}
 		else {
 			return m;
